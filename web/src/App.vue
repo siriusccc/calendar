@@ -1,7 +1,7 @@
 <template>
   <div>
-    <div>{{ name }}</div>
-    <div>{{ age }}</div>
+    <div>name:{{ name }}</div>
+    <div>age:{{ age }}</div>
   </div>
   <router-view/>
 </template>
