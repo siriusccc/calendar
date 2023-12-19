@@ -1,34 +1,19 @@
 <template>
-  <div>
-    <div>name:{{ name }}</div>
-    <div>age:{{ age }}</div>
-  </div>
+  <NavBar/>
   <router-view/>
 </template>
 
 <script>
-import $ from 'jquery';
-import {ref} from 'vue';
+import NavBar from '@/components/NavBar.vue'
+import "bootstrap/dist/css/bootstrap.min.css"
+import "bootstrap/dist/js/bootstrap"
+import '../node_modules/element-plus/dist/index.css'
 
 export default{
-  name: "app",
-  setup:() => {
-    let name = ref("");
-    let age = ref(""); 
-
-    $.ajax({
-      url:"http://localhost:520/record/getinfo/",
-      success: resp => {
-        name.value = resp.name;
-        age.value = resp.age;
-      }
-
-    })
-
-    return{
-      name,
-      age,
-    }
+  components:{
+    NavBar
+  },
+  setup(){
   }
 }
 </script>
