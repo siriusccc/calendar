@@ -7,7 +7,7 @@
     :router='true'
   >
     <el-menu-item index="1" index='/admin/users/personal'>Jeff</el-menu-item>
-    <el-sub-menu index="2" :popper-offset="8">
+    <el-sub-menu class='header-right' index="2" :popper-offset="8">
       <template #title>下拉</template>
       <el-menu-item index="3-1">子1</el-menu-item>
       <el-sub-menu index="3-4" :popper-offset="20">
