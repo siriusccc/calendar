@@ -19,18 +19,33 @@ public class LoginServiceImpl implements LoginService {
     private AuthenticationManager authenticationManager;
     @Override
     public Map<String, String> getToken(String username, String password) {
+        System.out.println(username);
+        System.out.println(password);
+        System.out.println("1");
         UsernamePasswordAuthenticationToken authenticationToken =
                 new UsernamePasswordAuthenticationToken(username, password);
+        System.out.println(authenticationToken);
         Authentication authenticate = authenticationManager.authenticate(authenticationToken);
+        System.out.println(authenticate);
+        System.out.println(username);
+        System.out.println("2");
 
         UserDetailsImpl loginUser = (UserDetailsImpl) authenticate.getPrincipal();
+        System.out.println(username);
+        System.out.println("3");
         User user = loginUser.getUser();
+        System.out.println(username);
+        System.out.println("4");
 
         String jwt = JwtUtil.createJWT(user.getId().toString());
+        System.out.println(username);
+        System.out.println("5");
 
         Map<String, String> map = new HashMap<>();
         map.put("error_message", "success");
         map.put("token", jwt);
+
+        System.out.println(map);
 
         return map;
     }

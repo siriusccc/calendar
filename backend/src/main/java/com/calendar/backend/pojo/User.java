@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 public class User {
     @TableId(type = IdType.AUTO)
     private Integer id;
-    private String pw;
     private String username;
+    private String password;
     private String avatar;
 }

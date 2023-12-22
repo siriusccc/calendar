@@ -27,8 +27,8 @@ public class UploadPicServiceImpl implements UploadPicService {
 
         User new_user = new User(
                 user.getId(),
+                user.getPassword(),
                 user.getUsername(),
-                user.getPw(),
                 url
         );
 

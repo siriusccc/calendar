@@ -17,6 +17,8 @@ public class LoginController {
     public Map<String, String> getToken(@RequestParam Map<String, String> map){
         String username = map.get("username");
         String password = map.get("password");
+        System.out.println(username);
+        System.out.println(password);
         return loginService.getToken(username, password);
     }
 }
