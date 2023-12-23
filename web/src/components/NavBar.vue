@@ -19,12 +19,45 @@
       </el-sub-menu>
     </el-sub-menu>
     <div class="flex-grow" />
-    <el-menu-item index="/user/login/">登录</el-menu-item>
-    <el-menu-item index="/user/register/">注册</el-menu-item>
+    <ul class="navbar-nav" v-if="!$store.state.user.is_login">
+      <el-sub-menu>
+        <template #title>账户</template>
+        <el-menu-item index="/user/login/">登录</el-menu-item>
+        <el-menu-item index="/user/register/">注册</el-menu-item>
+      </el-sub-menu>
+    </ul>
+    <ul class="navbar-nav" v-else-if="$store.state.user.is_login">
+      <el-sub-menu>
+        <template #title> {{ $store.state.user.username }}</template>
+        <el-menu-item @click="logout">退出登录</el-menu-item>
+      </el-sub-menu>
+    </ul>
+    
   </el-menu>
 </template>
 
-<script lang="ts" setup></script>
+<script>
+import { useRoute } from 'vue-router'
+import { computed } from 'vue'
+import { useStore } from 'vuex';
+
+export default {
+    setup() {
+        const store = useStore();
+        const route = useRoute();
+        let route_name = computed(() => route.name)
+        
+        const logout = () => {
+          store.dispatch("logout");
+        }
+        
+        return {
+          route_name,
+          logout
+        }
+    }
+}
+</script>
 
 <style scoped>
 .el-menu-popper-demo {
