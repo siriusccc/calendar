@@ -19,6 +19,14 @@ const routes = [
     }
   },
   {
+    path:"/tree/",
+    name: "tree",
+    component: () => import('../views/home/XmasTree'),
+    meta: {
+      requestAuth: false,
+    }
+  },
+  {
     path:"/pk/",
     name: "Calendar",
     component: () => import('../views/Calendar.vue'),
