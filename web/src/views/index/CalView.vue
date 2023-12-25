@@ -2,12 +2,14 @@
   <ContentField style="text-align: center;">
     <el-calendar>
       <template #date-cell="{ data }">
-        <div style="height: 100%;" :class="data.isSelected ? 'is-selected' : ''" @click="loadCal(data.day)" @dblclick.prevent="handleClick(data.day)">
-          <p>{{ data.day.split('-').slice(1).join('-') }}</p>
-          <!-- <div v-if="arr.find(v => v.date === data.day)">{{ arr.find(v => v.date === data.day).content }}</div> -->
-          <div v-if="data.day === content.date">{{ content.content }}</div>
-          <div v-else-if="!data.day === content.date"> {{ contentnull }}</div>
-        </div>
+        <el-tooltip placement="top" :content="hoverDate.value">
+          <div style="height: 100%;" :class="data.isSelected ? 'is-selected' : ''" @mouseover="hoverContent(data.day)" @click="loadCal(data.day)" @dblclick.prevent="handleClick(data.day)">
+            <div>{{ data.day.split('-').slice(1).join('-') }}</div>
+            <!-- <div v-if="arr.find(v => v.date === data.day)">{{ arr.find(v => v.date === data.day).content }}</div> -->
+            <div v-if="data.day === content.date">{{ content.content }}</div>
+            <div v-else-if="!data.day === content.date"> {{ contentnull }}</div>
+          </div>
+        </el-tooltip>
       </template>
     </el-calendar>
 
@@ -31,7 +33,7 @@
 <script>
 import ContentField from '../../components/ContentField.vue'
 import $ from 'jquery'
-import { ref, getCurrentInstance } from 'vue'
+import { ref, getCurrentInstance, reactive } from 'vue'
 import { useStore } from 'vuex';
 
 export default { 
@@ -43,12 +45,16 @@ export default {
       value: new Date(),
       dialogFormVisible: false,
       calendar: {},
+      store: useStore(),
     }
   },
   methods: {
     handleClick(date) {
       this.dialogFormVisible = true;
       this.calendar = {date: date};
+    },
+    handleMouseOver(date) {
+      this.hoverDate = date;
     },
   },
 
@@ -57,6 +63,9 @@ export default {
     const store = useStore();
     let content = ref([]);
     let contentnull = ref();
+    const hoverDate = reactive({
+      value: ''
+    })
 
     const loadCal = date => {
       $.ajax({
@@ -73,10 +82,7 @@ export default {
             contentnull = "";
           } else {
             content.value = resp[0];
-            // console.log(resp);
-            // console.log(content);
-            // console.log(content.value.date);
-            // console.log(content.value.content);
+            console.log(resp);
           }
         }
       })
@@ -95,8 +101,28 @@ export default {
         },
         success(resp){
             if(resp.error_message == "success") {
-                dialogForm.data.dialogFormVisible = false;
+              dialogForm.data.dialogFormVisible = false;
             }
+        }
+      })
+    }
+
+    const hoverContent = date => {
+      $.ajax({
+        url: "http://localhost:520/calendar/getinfo/",
+        type: "get",
+        data: {
+          date,
+        },
+        headers: {
+          Authorization: "Bearer " + store.state.user.token,
+        },
+        success(resp) {
+          if(resp[0] == null) {
+            hoverDate.value = '空';
+          } else {
+            hoverDate.value = resp[0].content;
+          }
         }
       })
     }
@@ -105,7 +131,9 @@ export default {
       content,
       contentnull,
       loadCal,
-      save
+      save,
+      hoverContent,
+      hoverDate,
     }
   },
 }

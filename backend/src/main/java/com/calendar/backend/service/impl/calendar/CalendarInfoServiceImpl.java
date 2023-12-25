@@ -18,6 +18,7 @@ public class CalendarInfoServiceImpl implements CalendarInfoService {
     public List<Calendar> getList(String date) {
         QueryWrapper<Calendar> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("date", date);
+        System.out.println(calendarMapper.selectList(queryWrapper));
         return calendarMapper.selectList(queryWrapper);
     }
 }
