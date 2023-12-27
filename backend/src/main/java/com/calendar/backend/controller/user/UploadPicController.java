@@ -15,7 +15,6 @@ import java.util.Map;
 public class UploadPicController {
     @Autowired
     private UploadPicService uploadPicService;
-
     @PostMapping("/user/uploadpic/")
     public Map<String, String> uploadPic(@RequestParam MultipartFile file) throws IOException {
         String picUrl = UploadPic.uploadPic(file);

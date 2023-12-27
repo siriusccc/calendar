@@ -8,13 +8,7 @@
             placement="top"
             :content="getContent(data)"
             :disabled="!data.day"> -->
-            <div 
-              style="height: 100%;" 
-              :class="data.isSelected ? 'is-selected' : ''" 
-              @mouseover="hoverContent(data.day)" 
-              @click="handleClick(data.day)" 
-              @dblclick="handledbClick(data.day)"
-            >
+            <div style="height: 100%;" :class="data.isSelected ? 'is-selected' : ''" @mouseover="hoverContent(data.day)" @click="loadCal(data.day)" @dblclick.prevent="handledbClick(data.day)">
               <div>{{ data.day.split('-').slice(1).join('-') }}</div>
               <div v-if="data.day === content.date">{{ content.content }}</div>
               <div v-else-if="!data.day === content.date"> {{ contentnull }}</div>
@@ -24,12 +18,7 @@
       </template>
     </el-calendar>
     <!-- <el-popover placement="top-start" :content="hoverDate.value"> -->
-    
-    <el-drawer v-model="clickdrawer" :show-close="false" title="I am the title">
-      <template #footer>
-        <el-button type="danger" @click="clickdrawer = false">cancel</el-button>
-      </template>
-    </el-drawer>
+
 
     <el-dialog v-model="dialogFormVisible" title="安排">
       <el-form :model="calendar" :label-width="100">
@@ -75,9 +64,9 @@
           </el-tooltip>
           <el-drawer v-model="visible" :show-close="false">
             <template #header="{ close }">
-          <!-- <h4 :id="titleId" :class="titleClass">This is a custom header!</h4> -->
+              <!-- <h4 :id="titleId" :class="titleClass">This is a custom header!</h4> -->
               <el-button type="danger" @click="close">
-          <!-- <el-icon class="el-icon--left"><CircleCloseFilled /></el-icon> -->
+                <!-- <el-icon class="el-icon--left"><CircleCloseFilled /></el-icon> -->
                   Close
               </el-button>
             </template>
@@ -104,29 +93,12 @@ export default {
     return {
       value: new Date(),
       dialogFormVisible: false,
-      clickdrawer: false,
       calendar: {},
-      clickCount: 0,
-      clickTimer: null
+      store: useStore(), 
     }
   },
   methods: {
-    handleClick(date) {
-      this.clickCount ++;
-      if (this.clickCount === 1) {
-        this.clickTimer = setTimeout(() => {
-          // 单击事件处理逻辑
-          this.clickdrawer = true;
-          this.calendar = {date: date};
-          this.clickCount = 0;
-        }, 200);
-      }
-    },
     handledbClick(date) {
-      clearTimeout(this.clickTimer);
-      this.clickCount = 0;
-      // 双击事件处理逻辑
-      console.log('Double click event');
       this.dialogFormVisible = true;
       this.calendar = {date: date};
     },

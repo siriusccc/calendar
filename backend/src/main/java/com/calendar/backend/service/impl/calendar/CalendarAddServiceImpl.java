@@ -1,6 +1,5 @@
 package com.calendar.backend.service.impl.calendar;
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.calendar.backend.mapper.CalendarMapper;
 import com.calendar.backend.pojo.Calendar;
 import com.calendar.backend.service.calendar.CalendarAddService;

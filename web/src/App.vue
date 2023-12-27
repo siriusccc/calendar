@@ -7,6 +7,7 @@
 import NavBar from '@/components/NavBar.vue'
 import "bootstrap/dist/css/bootstrap.min.css"
 import "bootstrap/dist/js/bootstrap"
+import "bootstrap/dist/js/bootstrap.bundle.min"
 import '../node_modules/element-plus/dist/index.css'
 
 export default{

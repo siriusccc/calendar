@@ -12,7 +12,6 @@ import java.util.Map;
 public class LoginController {
     @Autowired
     private LoginService loginService;
-
     @PostMapping("/user/token/")
     public Map<String, String> getToken(@RequestParam Map<String, String> map){
         String username = map.get("username");

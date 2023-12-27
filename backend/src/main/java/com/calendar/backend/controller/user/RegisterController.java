@@ -12,7 +12,6 @@ import java.util.Map;
 public class RegisterController {
     @Autowired
     private RegisterService registerService;
-
     @PostMapping("/user/register/")
     public Map<String, String> register(@RequestParam Map<String, String> map){
         String username = map.get("username");
