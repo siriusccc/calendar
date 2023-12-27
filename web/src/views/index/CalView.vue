@@ -25,7 +25,11 @@
     </el-calendar>
     <!-- <el-popover placement="top-start" :content="hoverDate.value"> -->
     
-    <el-drawer v-model="clickdrawer" :show-close="false" title="I am the title">
+    <el-drawer v-model="clickdrawer" :title="title" :show-close="true">
+      <div v-for="(imageUrl, index) in imageUrls" :key="index">
+        <img :src="imageUrl" alt="图片" style="margin-bottom: 10px;" />
+      </div>
+      
       <template #footer>
         <el-button type="danger" @click="clickdrawer = false">cancel</el-button>
       </template>
@@ -107,7 +111,10 @@ export default {
       clickdrawer: false,
       calendar: {},
       clickCount: 0,
-      clickTimer: null
+      clickTimer: null,
+      title: "",
+      imageUrls: ['https://jeff-pic.oss-cn-beijing.aliyuncs.com/f8261b0bf0bb4fa9b003c72c48af91d4.png',
+                  'https://jeff-pic.oss-cn-beijing.aliyuncs.com/f8261b0bf0bb4fa9b003c72c48af91d4.png'],
     }
   },
   methods: {
@@ -118,6 +125,7 @@ export default {
           // 单击事件处理逻辑
           this.clickdrawer = true;
           this.calendar = {date: date};
+          this.title = date;
           this.clickCount = 0;
         }, 200);
       }
