@@ -29,7 +29,7 @@
     </ul>
     <ul class="navbar-nav" v-else-if="$store.state.user.is_login">
       <el-sub-menu>
-        <template #title> {{ $store.state.user.username }}</template>
+        <template #title> {{ $store.state.user.username }} </template>
         <el-menu-item @click="logout">退出登录</el-menu-item>
       </el-sub-menu>
     </ul>
@@ -50,6 +50,7 @@ export default {
         
         const logout = () => {
           store.dispatch("logout");
+          location.reload();
         }
         
         return {

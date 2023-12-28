@@ -30,7 +30,7 @@ public class CalendarAddServiceImpl implements CalendarAddService {
             return map;
         }
 
-        Calendar calendar = new Calendar(null, date, content);
+        Calendar calendar = new Calendar(null, date, content, null);
         calendarMapper.insert(calendar);
         map.put("error_message", "success");
 

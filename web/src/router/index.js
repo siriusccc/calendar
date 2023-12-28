@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import store from '../store/index'
+import CalendarView from '../views/index/CalView'
 
 const routes = [
   {
@@ -13,7 +14,7 @@ const routes = [
   {
     path:"/calendar/",
     name: "calendar_index",
-    component: () => import('../views/index/CalView'),
+    component: CalendarView,
     meta: {
       requestAuth: true,
     }

@@ -57,7 +57,7 @@ export default {
                 success() {
                     store.dispatch("getinfo", {
                         success() {
-                            router.push({ name: 'user_account_login' });
+                            router.push({ name: 'home' });
                             console.log(store.state.user.username);
                         }
                     })

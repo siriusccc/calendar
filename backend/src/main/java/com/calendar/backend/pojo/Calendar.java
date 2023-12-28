@@ -14,4 +14,5 @@ public class Calendar {
     private Integer id;
     private String date;
     private String content;
+    private String picurl;
 }
