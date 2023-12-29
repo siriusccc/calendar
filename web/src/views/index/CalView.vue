@@ -26,9 +26,34 @@
     <!-- <el-popover placement="top-start" :content="hoverDate.value"> -->
     
     <el-drawer v-model="clickdrawer" :title="title" :show-close="true">
-      <div>{{ imageUrlss }}</div>
-      <div v-for="(imageUrl, index) in imageUrlss" :key="index">
-        <img :src="imageUrl" alt="图片" style="margin-bottom: 10px;" />
+      <div v-if="imageUrlss.length == 0">
+        <el-empty>
+          <el-upload
+            class="pic-uploader" 
+            :http-request="handleHttpRequest"             
+            :data="formData"
+          >
+            <el-button type="primary">添加图片</el-button>
+          </el-upload>
+        </el-empty>
+      </div>
+      <div v-for="(imageUrl, index) in imageUrlss" :key="index" >
+        <!-- <div>000000{{ imageUrl }}</div>
+        <div>{{ imageUrlss.length }}</div> -->
+        <div v-if="imageUrl.picurl == null">
+          你的评价是：{{ imageUrl.content }}
+        </div>
+        <div v-else-if="imageUrl.content == null" class="demo-image__lazy">
+          暂无评价
+          <!-- {{ imageUrl.picurl }} -->
+          <el-image 
+          :src="imageUrl.picurl" alt="图片" style="margin-bottom: 0px;" 
+          :zoom-rate="1.2"
+          :max-scale="7"
+          :min-scale="0.2"
+          :preview-src-list="imageUrls"
+          />
+        </div>
       </div>
       <template #footer>
         <el-button type="danger" @click="clickdrawer = false">cancel</el-button>
@@ -111,7 +136,6 @@ import ContentField from '../../components/ContentField.vue'
 import $ from 'jquery'
 import { ref, getCurrentInstance, reactive } from 'vue'
 import { useStore } from 'vuex';
-// import { client } from '../../alioss'
 
 export default { 
   components: {
@@ -126,10 +150,6 @@ export default {
       clickCount: 0,
       clickTimer: null,
       title: "",
-      fileList: [],
-      Addfrom:{
-          url:''
-        }
     }
   },
   methods: {
@@ -139,6 +159,7 @@ export default {
       if (this.clickCount === 1) {
         this.clickTimer = setTimeout(() => {
           // 单击事件处理逻辑
+          this.day = date;
           console.log(this.imageUrlss);
           this.clickdrawer = true;
           this.calendar = {date: date};
@@ -152,12 +173,8 @@ export default {
       this.clickCount = 0;
       // 双击事件处理逻辑
       this.day = date;
-      console.log(this.day)
       this.dialogFormVisible = true;
       this.calendar = {date: date};
-    },
-    handleMouseOver(date) {
-      this.hoverDate = date;
     },
     getContent(data) {
       if (data.day) {
@@ -165,36 +182,6 @@ export default {
       }
       return '';
     },
-    // handleBeforeUpload(file) {
-		// 		const isJPEG = file.name.split('.')[1] === 'jpeg';
-		// 		const isJPG = file.name.split('.')[1] === 'jpg';
-		// 		const isPNG = file.name.split('.')[1] === 'png';
-		// 		const isWEBP = file.name.split('.')[1] === 'webp';
-		// 		const isGIF = file.name.split('.')[1] === 'gif';
-		// 		const isLt500K = file.size / 1024 / 1024 / 1024 / 1024 < 4;
-		// 		if (!isJPG && !isJPEG && !isPNG && !isWEBP && !isGIF) {
-		// 			this.$message.error('上传图片只能是 JPEG/JPG/PNG 格式!');
-		// 		}
-		// 		if (!isLt500K) {
-		// 			this.$message.error('单张图片大小不能超过 4mb!');
-		// 		}
-		// 		return (isJPEG || isJPG || isPNG || isWEBP || isGIF) && isLt500K;
-		// 	},
-    // uploadURL(file) {
-    //   //注意哦，这里指定文件夹'image/'，尝试过写在配置文件，但是各种不行，写在这里就可以
-    //   var fileName = 'image/'+'banner' + `${Date.parse(new Date())}` + '.jpg'; 
-    //   //定义唯一的文件名，打印出来的uid其实就是时间戳
-    //   client().multipartUpload(fileName, file.file,{
-    //           progress: function(percentage) {
-    //             console.log('打印进度',percentage)
-    //           }
-    //         }).then(()=>{
-    //     //此处赋值，是相当于上传成功之后，手动拼接服务器地址和文件名
-    //     //简单描述就是bucket概括，里面的域名地址，粘贴过来可以直接用
-    //     this.Addfrom.url = "https://jeff-pic.oss-cn-beijing.aliyuncs.com/" + fileName;
-    //     console.log(this.Addfrom.url,"this.Addfrom.url")
-    //   })
-    // },
   },
 
   setup() { 
@@ -202,38 +189,12 @@ export default {
     const store = useStore();
     let content = ref([]);
     let contentnull = ref();
-    const hoverDate = reactive({
-      value: ''
-    })
+    const hoverDate = reactive({value: ''})
     const visible = ref(false);
 
-    let imageUrlss = ref([]);
+    let imageUrlss = ref();
+    let imageUrls = ref();
     const day = ref(null);
-    const uploadFile = ref({
-      date: null,
-      file: null,
-    });
-
-    const loadCal = date => {
-      $.ajax({
-        url: "http://localhost:520/calendar/getinfo/",
-        type: "get",
-        data: {
-          date,
-        },
-        headers: {
-          Authorization: "Bearer " + store.state.user.token,
-        },
-        success(resp) {
-          if(resp[0] == null) {
-            contentnull = "";
-          } else {
-            content.value = resp[0];
-            console.log(resp);
-          }
-        }
-      })
-    }
 
     const save = info => {
       $.ajax({
@@ -286,29 +247,26 @@ export default {
         },
         success(resp) {
           imageUrlss.value = [];
+          imageUrls.value = [];
           if(resp[0] != null) {
             for(var item of  resp) {
-              imageUrlss.value.push(item.picurl);
+              imageUrlss.value.push({"content":item.content,"picurl":item.picurl})
+              if(item.picurl != null)
+              imageUrls.value.push(item.picurl)
             }
-          } else {
-            imageUrlss.value = ['https://jeff-pic.oss-cn-beijing.aliyuncs.com/f8261b0bf0bb4fa9b003c72c48af91d4.png',]
-          }
+          } 
         }
       }),
       console.log(imageUrlss);
     }
 
-    const headersobj = {
-      "Authorization": 'Bearer ' + store.state.user.token,
-    }
-
     const handleHttpRequest = (file) => {
       console.log(file);
       console.log(day.value);
+
       let filedata = new FormData();
       filedata.append("file", file.file)
       filedata.append("date", day.value)
-      // let date = day.value;
       $.ajax({
         url: "http://localhost:520/calendar/upload/",
         type: "post",
@@ -324,48 +282,18 @@ export default {
       })
     }
 
-    const handleBeforeUpload = file => {
-      uploadFile.value.date = day.value;
-      uploadFile.value.file = file;
-      return true;
-    }
-
-    const handleUploadSuccess = () => {
-      const formData = new FormData();
-      formData.append('date', uploadFile.value.date);
-      formData.append('file', uploadFile.value.file);
-      console.log(formData);
-
-      $.ajax({
-        url: "http://localhost:520/calendar/upload/",
-        type: "post",
-        data: formData,
-        headers: {
-          Authorization: "Bearer " + store.state.user.token,
-        },
-        success(resp) {
-          console.log(resp);
-        }
-      })
-
-    }
-
     return{
       content,
       contentnull,
-      loadCal,
       save,
       hoverContent,
       hoverDate,
       visible,
       getImage,
+      imageUrls,
       imageUrlss,
-      headersobj,
       handleHttpRequest,
       day,
-      uploadFile,
-      handleBeforeUpload,
-      handleUploadSuccess,
     }
   },
 }
@@ -374,5 +302,17 @@ export default {
 <style scoped>
 .is-selected {
   color: #1989fa;
+}
+.demo-image__lazy {
+  height: 300px;
+  overflow-y: auto;
+}
+.demo-image__lazy .el-image {
+  display: block;
+  min-height: 200px;
+  margin-bottom: 10px;
+}
+.demo-image__lazy .el-image:last-child {
+  margin-bottom: 0;
 }
 </style>
