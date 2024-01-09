@@ -9,7 +9,7 @@ import java.io.IOException;
 import java.util.UUID;
 
 public class UploadPic {
-    public static final String ali_domain = "https://jeff-pic.oss-cn-beijing.aliyuncs.com/";
+    public static final String ali_domain = "https://cal-pic.oss-cn-beijing.aliyuncs.com/";
     public static String uploadPic(MultipartFile file) throws IOException {
         // 生成文件名
         String originalFilename = file.getOriginalFilename();
@@ -23,7 +23,7 @@ public class UploadPic {
         // OSS客户端对象
         OSS ossClient = new OSSClientBuilder().build(endpoint, accessKeyId, accessKeySecert);
         ossClient.putObject(
-                "jeff-pic",  // 仓库名
+                "cal-pic",  // 仓库名
                 fileName,       // 文件名
                 file.getInputStream()
         );

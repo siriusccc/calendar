@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.Map;
 
 @RestController
@@ -16,11 +17,11 @@ public class PicUploadController {
     @Autowired
     private CalendarPicService calendarPicService;
 
-    @PostMapping("/calendar/upload/")
+    @PostMapping("/api/calendar/upload/")
     public Map<String, String> PicUpload(@RequestParam("file") MultipartFile file,
                                          @RequestParam("date") String date) throws IOException {
         String picUrl = UploadPic.uploadPic(file);
-        System.out.println(picUrl+date);
+
         return calendarPicService.PicUpload(picUrl, date);
     }
 }

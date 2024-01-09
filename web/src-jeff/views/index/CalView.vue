@@ -32,8 +32,6 @@
             class="pic-uploader" 
             :http-request="handleHttpRequest"             
             :data="formData"
-            multiple
-            accept=".jpg, .png"
           >
             <el-button type="primary">添加图片</el-button>
           </el-upload>
@@ -62,7 +60,7 @@
       </template>
     </el-drawer>
 
-    <el-dialog v-model="dialogFormVisible" title="插入内容">
+    <el-dialog v-model="dialogFormVisible" title="安排">
       <el-form :model="calendar" :label-width="100">
         <el-form-item label="添加内容">
           <el-input v-model="calendar.content" autocomplete="off" />
@@ -72,20 +70,12 @@
             class="pic-uploader" 
             :http-request="handleHttpRequest"             
             :data="formData"
-            v-model:file-list="fileList"
-            list-type="picture-card"
-            :on-preview="handlePictureCardPreview"
-            multiple
-            accept=".jpg, .png">
-            <!-- <el-button size="big" type="primary" style="width: 100%;">
+
+          >
+            <el-button size="big" type="primary" style="width: 100%;">
               点击上传
-            </el-button> -->
+            </el-button>
           </el-upload>
-
-          <el-dialog v-model="dialogVisible">
-            <img w-full :src="dialogImageUrl" alt="Preview Image" />
-          </el-dialog>
-
         </el-form-item>
       </el-form>
       <template #footer>
@@ -206,13 +196,9 @@ export default {
     let imageUrls = ref();
     const day = ref(null);
 
-    const fileList = ref([]);
-    const dialogImageUrl = ref('');
-    const dialogVisible = ref(false);
-
     const save = info => {
       $.ajax({
-        url: "http://localhost:520/api/calendar/addinfo/",
+        url: "https://www.jeffofficial.cn/api/calendar/addinfo/",
         type: "post",
         data:{
             date: info.date,
@@ -231,7 +217,7 @@ export default {
 
     const hoverContent = date => {
       $.ajax({
-        url: "http://localhost:520/api/calendar/getinfo/",
+        url: "https://www.jeffofficial.cn/api/calendar/getinfo/",
         type: "get",
         data: {
           date,
@@ -251,7 +237,7 @@ export default {
 
     const getImage = date => {
       $.ajax({
-        url: "http://localhost:520/api/calendar/getinfo/",
+        url: "https://www.jeffofficial.cn/api/calendar/getinfo/",
         type: "get",
         data: {
           date,
@@ -275,15 +261,14 @@ export default {
     }
 
     const handleHttpRequest = (file) => {
-      // console.log(day.value);
       // console.log(file);
-      // console.log(file.file);
+      // console.log(day.value);
 
       let filedata = new FormData();
       filedata.append("file", file.file)
       filedata.append("date", day.value)
       $.ajax({
-        url: "http://localhost:520/api/calendar/upload/",
+        url: "https://www.jeffofficial.cn/api/calendar/upload/",
         type: "post",
         data: filedata,
         processData: false,
@@ -295,11 +280,6 @@ export default {
           console.log(resp);
         }
       })
-    }
-
-    const handlePictureCardPreview = (uploadFile) => {
-      dialogImageUrl.value = uploadFile.url
-      dialogVisible.value = true
     }
 
     return{
@@ -314,10 +294,6 @@ export default {
       imageUrlss,
       handleHttpRequest,
       day,
-      fileList,
-      dialogImageUrl,
-      dialogVisible,
-      handlePictureCardPreview
     }
   },
 }

@@ -13,7 +13,7 @@ import java.util.List;
 public class GetInfoController {
     @Autowired
     private CalendarInfoService calendarInfoService;
-    @GetMapping("/calendar/getinfo/")
+    @GetMapping("/api/calendar/getinfo/")
     public List<Calendar> getInfo(@RequestParam String date) {
         return calendarInfoService.getList(date);
     }

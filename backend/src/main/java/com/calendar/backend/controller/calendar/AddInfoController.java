@@ -13,7 +13,7 @@ public class AddInfoController {
     @Autowired
     private CalendarAddService calendarAddService;
 
-    @PostMapping("/calendar/addinfo/")
+    @PostMapping("/api/calendar/addinfo/")
     public Map<String, String> addInfo(@RequestParam Map<String, String> data) {
         return calendarAddService.add(data);
     }
