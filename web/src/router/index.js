@@ -36,6 +36,14 @@ const routes = [
     }
   },
   {
+    path:"/info/",
+    name: "userinfo",
+    component: () => import('@/views/user/UserAccountInfo'),
+    meta: {
+      requestAuth: true,
+    }
+  },
+  {
     path: "/user/login/",
     name: "user_account_login",
     component: () => import('@/views/user/UserAccountLoginView'),

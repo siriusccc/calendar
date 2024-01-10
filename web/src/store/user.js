@@ -14,7 +14,7 @@ export default {
         updateUser(state, user) {
             state.id = user.id;
             state.username = user.username;
-            state.photo = user.photo;
+            state.photo = user.avatar;
             state.is_login = user.is_login;
         },
         updateToken(state, token) {

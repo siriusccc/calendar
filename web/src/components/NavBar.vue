@@ -28,8 +28,16 @@
       </el-sub-menu>
     </ul>
     <ul class="navbar-nav" v-else-if="$store.state.user.is_login">
-      <el-sub-menu>
-        <template #title> {{ $store.state.user.username }} </template>
+      <el-sub-menu>        
+        <template #title>
+          <el-avatar
+          class="header-img"
+          :src="$store.state.user.photo"
+        />
+        &nbsp; &nbsp;
+          {{ $store.state.user.username }} 
+        </template>
+        <el-menu-item index="/info/">个人中心</el-menu-item>
         <el-menu-item @click="logout">退出登录</el-menu-item>
       </el-sub-menu>
     </ul>
@@ -47,7 +55,7 @@ export default {
         const store = useStore();
         const route = useRoute();
         let route_name = computed(() => route.name)
-        
+
         const logout = () => {
           store.dispatch("logout");
           location.reload();
@@ -69,5 +77,10 @@ export default {
 }
 .flex-grow {
   flex-grow: 0.91;
+}
+.header-img {
+    width: 6vh;
+    height: 6vh;
+    border-radius: 50%;
 }
 </style>
