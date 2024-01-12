@@ -120,7 +120,7 @@
             content="信息"
           >
           <template #reference>
-            <el-button @click="visible = true">Open Drawer</el-button>
+            <!-- <el-button @click="visible = true">Open Drawer</el-button> -->
           </template> 
           </el-popover>
           </el-tooltip>

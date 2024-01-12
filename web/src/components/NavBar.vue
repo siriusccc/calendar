@@ -81,6 +81,7 @@ export default {
 .header-img {
     width: 6vh;
     height: 6vh;
-    border-radius: 50%;
+    margin-top: 5px;
+    /* border-radius: 50%; */
 }
 </style>
