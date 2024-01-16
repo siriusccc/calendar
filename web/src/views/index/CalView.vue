@@ -46,8 +46,9 @@
           你的评价是：{{ imageUrl.content }}
         </div>
         <div v-else-if="imageUrl.content == null" class="demo-image__lazy">
-          暂无评价
           <!-- {{ imageUrl.picurl }} -->
+          <span v-if="!isEditing" @click="startEditing('null')">暂无评价</span>
+          <el-input class="inputdesc" v-else v-show="isEditing" v-model="editedText" @blur="stopEditing(imageUrl.picurl)" @keyup.enter="stopEditing(imageUrl.picurl)" />
           <el-image 
           :src="imageUrl.picurl" alt="图片" style="margin-bottom: 0px;" 
           :zoom-rate="1.2"
@@ -55,6 +56,18 @@
           :min-scale="0.2"
           :preview-src-list="imageUrls"
           />
+        </div>
+        <div v-else class="demo-image__lazy">
+          <span v-if="!isEditing" @click="startEditing(imageUrl.content)">你的评价是：{{ imageUrl.content }}</span>
+          <el-input class="inputdesc" v-else v-show="isEditing" v-model="editedText" @blur="stopEditing(imageUrl.picurl)" @keyup.enter="stopEditing(imageUrl.picurl)" />
+          <el-image 
+          :src="imageUrl.picurl" alt="图片" style="margin-bottom: 0px;" 
+          :zoom-rate="1.2"
+          :max-scale="7"
+          :min-scale="0.2"
+          :preview-src-list="imageUrls"
+          />
+
         </div>
       </div>
       <template #footer>
@@ -144,7 +157,7 @@
 <script>
 import ContentField from '../../components/ContentField.vue'
 import $ from 'jquery'
-import { ref, getCurrentInstance, reactive } from 'vue'
+import { ref, getCurrentInstance, reactive, nextTick } from 'vue'
 import { useStore } from 'vuex';
 
 export default { 
@@ -210,6 +223,10 @@ export default {
     const dialogImageUrl = ref('');
     const dialogVisible = ref(false);
 
+    const isEditing = ref(false);
+    const editedText = ref("");
+    const editInputRef = ref(null);
+
     const save = info => {
       $.ajax({
         url: "http://localhost:520/api/calendar/addinfo/",
@@ -271,7 +288,6 @@ export default {
           } 
         }
       })
-      // console.log(imageUrlss);
     }
 
     const handleHttpRequest = (file) => {
@@ -302,6 +318,46 @@ export default {
       dialogVisible.value = true
     }
 
+    const startEditing = (content) => {
+      isEditing.value = true;
+      if(content == 'null') {
+        editedText.value = "暂无评价";
+      } else {
+        editedText.value = content; // 保存原始文本
+      }
+      
+      
+      nextTick(() => {
+        // 在调用 focus 之前检查 editInputRef.value 是否不为 null
+        if (editInputRef.value) {
+          editInputRef.value.focus(); // 使用 ref 聚焦输入框
+        }
+      });
+    }
+
+    const stopEditing = (img) => {
+      let text;
+      isEditing.value = false;
+      if (editedText.value !== "") {
+        text = editedText.value;
+      }
+
+      $.ajax({
+        url: "http://localhost:520/api/calendar/addcontent/",
+        type: "post",
+        data:{
+            picurl: img,
+            content: text,
+        },
+        headers: {
+          Authorization: "Bearer " + store.state.user.token,
+        },
+        success(resp) {
+          console.log(resp);
+        }
+      })
+    }
+
     return{
       content,
       contentnull,
@@ -317,7 +373,12 @@ export default {
       fileList,
       dialogImageUrl,
       dialogVisible,
-      handlePictureCardPreview
+      handlePictureCardPreview,
+      startEditing,
+      stopEditing,
+      isEditing,
+      editedText,
+      editInputRef
     }
   },
 }
@@ -338,5 +399,8 @@ export default {
 }
 .demo-image__lazy .el-image:last-child {
   margin-bottom: 0;
+}
+.inputdesc{
+  width: 200px;
 }
 </style>

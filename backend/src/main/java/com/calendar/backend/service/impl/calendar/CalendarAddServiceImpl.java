@@ -1,5 +1,6 @@
 package com.calendar.backend.service.impl.calendar;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.calendar.backend.mapper.CalendarMapper;
 import com.calendar.backend.pojo.Calendar;
 import com.calendar.backend.service.calendar.CalendarAddService;
@@ -12,7 +13,7 @@ import java.util.Map;
 @Service
 public class CalendarAddServiceImpl implements CalendarAddService {
     @Autowired
-    private CalendarMapper calendarMapper;
+    public CalendarMapper calendarMapper;
     @Override
     public Map<String, String> add(Map<String, String> data) {
         String date = data.get("date");
@@ -36,4 +37,31 @@ public class CalendarAddServiceImpl implements CalendarAddService {
 
         return map;
     }
+
+    @Override
+    public Map<String, String> addContent(Map<String, String> data) {
+        String content = data.get("content");
+        String picUrl = data.get("picurl");
+
+        QueryWrapper<Calendar> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("picurl", picUrl);
+
+        Calendar calendar = calendarMapper.selectOne(queryWrapper);
+
+        Calendar new_calendar = new Calendar(
+            calendar.getId(),
+            calendar.getDate(),
+            content,
+            picUrl
+        );
+
+        calendarMapper.updateById(new_calendar);
+
+        Map<String, String> map = new HashMap<>();
+        map.put("error_message", "success");
+
+        return map;
+    }
+
+
 }
