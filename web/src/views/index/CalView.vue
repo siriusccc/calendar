@@ -56,7 +56,11 @@
           :min-scale="0.2"
           :preview-src-list="imageUrls"
           />
+          <div>
+            <el-button style="margin-top: 0px;" type="danger" :icon="Delete" circle @click="deletePic(imageUrl.picurl)"/>
+          </div>
         </div>
+
         <div v-else class="demo-image__lazy">
           <span v-if="!isEditing" @click="startEditing(imageUrl.content)">你的评价是：{{ imageUrl.content }}</span>
           <el-input class="inputdesc" v-else v-show="isEditing" v-model="editedText" @blur="stopEditing(imageUrl.picurl)" @keyup.enter="stopEditing(imageUrl.picurl)" />
@@ -67,7 +71,9 @@
           :min-scale="0.2"
           :preview-src-list="imageUrls"
           />
-
+          <div>
+            <el-button style="margin-top: 0px;" type="danger" :icon="Delete" circle @click="deletePic(imageUrl.picurl)"/>
+          </div>
         </div>
       </div>
       <template #footer>
@@ -158,7 +164,8 @@
 import ContentField from '../../components/ContentField.vue'
 import $ from 'jquery'
 import { ref, getCurrentInstance, reactive, nextTick } from 'vue'
-import { useStore } from 'vuex';
+import { useStore } from 'vuex'
+import { Delete } from '@element-plus/icons-vue'
 
 export default { 
   components: {
@@ -358,6 +365,22 @@ export default {
       })
     }
 
+    const deletePic = (img) => {
+      $.ajax({
+        url: "http://localhost:520/api/calendar/delpic/",
+        type: "post",
+        data:{
+            picurl: img
+        },
+        headers: {
+          Authorization: "Bearer " + store.state.user.token,
+        },
+        success(resp) {
+          console.log(resp);
+        }
+      })
+    }
+
     return{
       content,
       contentnull,
@@ -378,7 +401,9 @@ export default {
       stopEditing,
       isEditing,
       editedText,
-      editInputRef
+      editInputRef,
+      Delete,
+      deletePic
     }
   },
 }
@@ -394,8 +419,8 @@ export default {
 }
 .demo-image__lazy .el-image {
   display: block;
-  min-height: 200px;
-  margin-bottom: 10px;
+  min-height: 230px;
+  margin-bottom: 100px;
 }
 .demo-image__lazy .el-image:last-child {
   margin-bottom: 0;

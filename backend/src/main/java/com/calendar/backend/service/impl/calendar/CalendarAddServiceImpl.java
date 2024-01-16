@@ -63,5 +63,22 @@ public class CalendarAddServiceImpl implements CalendarAddService {
         return map;
     }
 
+    @Override
+    public Map<String, String> removePic(Map<String, String> data) {
+        String picUrl = data.get("picurl");
+
+        QueryWrapper<Calendar> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("picurl", picUrl);
+
+        System.out.println(queryWrapper+picUrl);
+
+        calendarMapper.delete(queryWrapper);
+
+        Map<String, String> map = new HashMap<>();
+        map.put("error_message", "success");
+
+        return map;
+    }
+
 
 }
