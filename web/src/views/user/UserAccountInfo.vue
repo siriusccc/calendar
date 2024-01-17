@@ -19,13 +19,16 @@
                     <div class="card-body">
                         <span style="font-style: italic; font-weight: bold;">你是：{{ $store.state.user.username }}</span>
                         <hr>
-                        <el-upload action="http://localhost:520/api/user/uploadpic/" 
+                        <!-- <el-upload action="http://localhost:520/api/user/uploadpic/" 
                         :headers="headersobj"
                         >
                             <el-button size="big" type="primary">
                                 更换头像
                             </el-button>
-                        </el-upload>
+                        </el-upload> -->
+                        <el-button size="big" type="primary" @click="infodialogVisible = true">
+                            更新信息
+                        </el-button>
                         <el-button size="big" type="primary" @click="dialogVisible = true">
                             更换背景
                         </el-button>
@@ -37,6 +40,22 @@
             </div>
         </div>
 
+        <el-dialog v-model="infodialogVisible" title="更新信息">
+            <el-form :label-width="100">
+                <el-form-item label="更换id">
+                    <el-input v-model="newusername" autocomplete="off" style="width: 200px; margin-right: 10px;" />
+                    <el-button type="primary" @click="updateid(newusername)">确定</el-button>
+                </el-form-item>
+                <el-form-item label="更换头像">
+                    <el-upload action="http://localhost:520/api/user/uploadpic/" 
+                        :headers="headersobj">
+                        <el-button size="big" type="primary">
+                            更换头像
+                        </el-button>
+                    </el-upload>
+                </el-form-item>
+            </el-form>
+        </el-dialog>
         <el-dialog v-model="dialogVisible" title="选择背景">
             <div>
                 <el-image v-for="image in bgImages" :key="image"
@@ -52,6 +71,8 @@
 <script>
 import { onMounted, ref } from 'vue'
 import { useStore } from 'vuex'
+import $ from 'jquery'
+import { ElMessage } from 'element-plus'
 
 export default {
   components:{
@@ -59,9 +80,11 @@ export default {
 
   setup() {
     const dialogVisible = ref(false);
+    const infodialogVisible = ref(false);
     const bgImages = ref([]);
     const selectBgImage = ref(localStorage.getItem('backgroundImage')||'');
     const store = useStore();
+    const newusername = ref();
 
     const selectImage = (image) => {
         selectBgImage.value = require(`@/assets/images/${image}`);
@@ -86,12 +109,35 @@ export default {
         // console.log(localStorage);
     });
 
+    const updateid = (username) => {
+        $.ajax({
+        url: "http://localhost:520/api/user/updateid/",
+        type: "post",
+        data:{
+            username: username,
+        },
+        headers:{
+            Authorization: "Bearer " + store.state.user.token,
+        },
+        success(resp){
+            console.log(resp);
+        }
+      }),
+      ElMessage({
+          type: 'success',
+          message: '更新成功',
+        })
+    }
+
     return{
         dialogVisible,
+        infodialogVisible,
         bgImages,
         selectImage,
         selectBgImage,
         headersobj,
+        updateid,
+        newusername
     }
   }
 }

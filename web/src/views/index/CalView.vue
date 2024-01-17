@@ -57,7 +57,7 @@
           :preview-src-list="imageUrls"
           />
           <div>
-            <el-button style="margin-top: 0px;" type="danger" :icon="Delete" circle @click="deletePic(imageUrl.picurl)"/>
+            <el-button style="margin-top: 0px;" type="danger" :icon="Delete" circle @click="confirmDelete(imageUrl.picurl)"/>
           </div>
         </div>
 
@@ -72,7 +72,7 @@
           :preview-src-list="imageUrls"
           />
           <div>
-            <el-button style="margin-top: 0px;" type="danger" :icon="Delete" circle @click="deletePic(imageUrl.picurl)"/>
+            <el-button type="danger" :icon="Delete" circle @click="confirmDelete(imageUrl.picurl)"></el-button>
           </div>
         </div>
       </div>
@@ -99,6 +99,7 @@
             <!-- <el-button size="big" type="primary" style="width: 100%;">
               点击上传
             </el-button> -->
+            <el-icon class="avatar-uploader-icon"><Plus /></el-icon>
           </el-upload>
 
           <el-dialog v-model="dialogVisible">
@@ -165,7 +166,8 @@ import ContentField from '../../components/ContentField.vue'
 import $ from 'jquery'
 import { ref, getCurrentInstance, reactive, nextTick } from 'vue'
 import { useStore } from 'vuex'
-import { Delete } from '@element-plus/icons-vue'
+import { Delete, Plus } from '@element-plus/icons-vue'
+import { ElMessage, ElMessageBox } from 'element-plus'
 
 export default { 
   components: {
@@ -365,6 +367,30 @@ export default {
       })
     }
 
+    const confirmDelete = (img) => {
+      ElMessageBox.confirm(
+        '真的要删除吗?',
+        '确认删除',
+        {
+          confirmButtonText: '确定',
+          cancelButtonText: '不确定',
+          type: 'warning',
+        }
+      ).then(() => {
+        console.log(img);
+        deletePic(img);
+        ElMessage({
+          type: 'success',
+          message: '删除成功',
+        })
+      }).catch(() => {
+        ElMessage({
+          type: 'info',
+          message: '没删除',
+        })
+      })
+    };
+
     const deletePic = (img) => {
       $.ajax({
         url: "http://localhost:520/api/calendar/delpic/",
@@ -403,7 +429,8 @@ export default {
       editedText,
       editInputRef,
       Delete,
-      deletePic
+      Plus,
+      confirmDelete
     }
   },
 }
