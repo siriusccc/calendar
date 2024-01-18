@@ -42,8 +42,6 @@ public class InfoServiceImpl implements InfoService {
 
         String username = data.get("username");
 
-        System.out.println(username);
-
         Map<String, String> map = new HashMap<>();
         if (username == null || username.length() == 0){
             map.put("error_message","名称不能为空");
@@ -64,6 +62,7 @@ public class InfoServiceImpl implements InfoService {
         userMapper.updateById(new_user);
 
         map.put("error_message", "success");
+        map.put("data", username);
         return map;
     }
 }

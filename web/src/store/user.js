@@ -26,6 +26,12 @@ export default {
             state.token = "";
             state.photo = "";
             state.is_login = false;
+        },
+        updatePhoto(state, newPhotoUrl) {
+            state.photo = newPhotoUrl;
+        },
+        updateUsername(state, newUsername) {
+            state.username = newUsername;
         }
     },
     actions: {

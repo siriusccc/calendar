@@ -34,6 +34,7 @@ public class UploadPicServiceImpl implements UploadPicService {
 
         userMapper.updateById(new_user);
         map.put("error_message", "success");
+        map.put("data", url);
         return map;
     }
 }

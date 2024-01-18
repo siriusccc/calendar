@@ -43,12 +43,13 @@
         <el-dialog v-model="infodialogVisible" title="更新信息">
             <el-form :label-width="100">
                 <el-form-item label="更换id">
-                    <el-input v-model="newusername" autocomplete="off" style="width: 200px; margin-right: 10px;" />
+                    <el-input v-model="newusername" autocomplete="off" style="width: 200px; margin-right: 10px;" clearable/>
                     <el-button type="primary" @click="updateid(newusername)">确定</el-button>
                 </el-form-item>
                 <el-form-item label="更换头像">
                     <el-upload action="http://localhost:520/api/user/uploadpic/" 
-                        :headers="headersobj">
+                        :headers="headersobj"
+                        :on-success="handleUploadSuccess">
                         <el-button size="big" type="primary">
                             更换头像
                         </el-button>
@@ -106,7 +107,6 @@ export default {
         if(storedImage){
             selectBgImage.value = storedImage;
         }
-        // console.log(localStorage);
     });
 
     const updateid = (username) => {
@@ -120,13 +120,19 @@ export default {
             Authorization: "Bearer " + store.state.user.token,
         },
         success(resp){
-            console.log(resp);
+            infodialogVisible.value = false;
+            store.commit('updateUsername', resp.data);
         }
       }),
       ElMessage({
           type: 'success',
           message: '更新成功',
         })
+    }
+
+    const handleUploadSuccess = (response) => {
+      const newPhotoUrl = response.data;
+      store.commit('updatePhoto', newPhotoUrl);
     }
 
     return{
@@ -137,7 +143,8 @@ export default {
         selectBgImage,
         headersobj,
         updateid,
-        newusername
+        newusername,
+        handleUploadSuccess
     }
   }
 }
