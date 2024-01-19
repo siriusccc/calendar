@@ -56,7 +56,8 @@ public class InfoServiceImpl implements InfoService {
                 user.getId(),
                 username,
                 user.getPassword(),
-                user.getAvatar()
+                user.getAvatar(),
+                user.getLevel()
         );
 
         userMapper.updateById(new_user);

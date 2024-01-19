@@ -3,10 +3,15 @@ package com.calendar.backend.service.impl.calendar;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.calendar.backend.mapper.CalendarMapper;
 import com.calendar.backend.pojo.Calendar;
+import com.calendar.backend.pojo.User;
 import com.calendar.backend.service.calendar.CalendarInfoService;
+import com.calendar.backend.service.impl.util.UserDetailsImpl;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -15,9 +20,26 @@ public class CalendarInfoServiceImpl implements CalendarInfoService {
     private CalendarMapper calendarMapper;
     @Override
     public List<Calendar> getList(String date) {
+        UsernamePasswordAuthenticationToken authenticationToken =
+                (UsernamePasswordAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
+        UserDetailsImpl loginUser = (UserDetailsImpl) authenticationToken.getPrincipal();
+        User user = loginUser.getUser();
+
         QueryWrapper<Calendar> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("date", date);
-//        System.out.println(calendarMapper.selectList(queryWrapper));
-        return calendarMapper.selectList(queryWrapper);
+        int user_id = user.getId();
+        int level = user.getLevel();
+
+        List<Calendar> List = new ArrayList<>();
+        List<Calendar> calendarList = calendarMapper.selectList(queryWrapper);
+
+        for(Calendar calendar: calendarList){
+            if(calendar.getUserId() == user_id || level == 0){
+                List.add(calendar);
+            }
+        }
+
+        System.out.println(List);
+        return List;
     }
 }

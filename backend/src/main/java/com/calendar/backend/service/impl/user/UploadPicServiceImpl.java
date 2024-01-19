@@ -29,7 +29,8 @@ public class UploadPicServiceImpl implements UploadPicService {
                 user.getId(),
                 user.getUsername(),
                 user.getPassword(),
-                url
+                url,
+                user.getLevel()
         );
 
         userMapper.updateById(new_user);
