@@ -17,4 +17,8 @@ public class GetInfoController {
     public List<Calendar> getInfo(@RequestParam String date) {
         return calendarInfoService.getList(date);
     }
+    @GetMapping("/api/calendar/getallinfo/")
+    public List<Calendar> getAllInfo() {
+        return calendarInfoService.getAllList();
+    }
 }

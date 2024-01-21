@@ -38,8 +38,26 @@ public class CalendarInfoServiceImpl implements CalendarInfoService {
                 List.add(calendar);
             }
         }
-
-        System.out.println(List);
         return List;
+    }
+
+    @Override
+    public List<Calendar> getAllList() {
+        UsernamePasswordAuthenticationToken authenticationToken =
+                (UsernamePasswordAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
+        UserDetailsImpl loginUser = (UserDetailsImpl) authenticationToken.getPrincipal();
+        User user = loginUser.getUser();
+
+        int level = user.getLevel();
+
+        QueryWrapper<Calendar> queryWrapper = new QueryWrapper<>();
+
+        if (level != 0){
+            queryWrapper.eq("user_id", user.getId());
+        } else {
+            queryWrapper.allEq(null);
+        }
+
+        return calendarMapper.selectList(queryWrapper);
     }
 }

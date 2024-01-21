@@ -15,9 +15,11 @@
               @click="handleClick(data.day)" 
               @dblclick="handledbClick(data.day)"
             >
-              <div>{{ data.day.split('-').slice(1).join('-') }}</div>
-              <div v-if="data.day === content.date">{{ content.content }}</div>
-              <div v-else-if="!data.day === content.date"> {{ contentnull }}</div>
+            <div>{{ data.day.split('-').slice(1).join('-') }}</div>
+            <!-- <div v-if="data.day === content.date" :icon="Share">{{ content.content }}</div> -->
+            <!-- <div v-else-if="!data.day === content.date"> {{ contentnull }}</div>  -->
+            <el-badge class="badgeitem" v-if="checkBadge(data.day)" is-dot/>
+            <el-badge class="badgeitem" v-else is-dot:false/>
             </div>
           <!-- </el-popover> -->
         </div>
@@ -40,13 +42,10 @@
         </el-empty>
       </div>
       <div v-for="(imageUrl, index) in imageUrlss" :key="index" >
-        <!-- <div>000000{{ imageUrl }}</div>
-        <div>{{ imageUrlss.length }}</div> -->
         <div v-if="imageUrl.picurl == null">
           你的评价是：{{ imageUrl.content }}
         </div>
         <div v-else-if="imageUrl.content == null" class="demo-image__lazy">
-          <!-- {{ imageUrl.picurl }} -->
           <span v-if="!isEditing" @click="startEditing('null')">暂无评价</span>
           <el-input class="inputdesc" v-else v-show="isEditing" v-model="editedText" @blur="stopEditing(imageUrl.picurl)" @keyup.enter="stopEditing(imageUrl.picurl)" />
           <el-image 
@@ -164,9 +163,9 @@
 <script>
 import ContentField from '../../components/ContentField.vue'
 import $ from 'jquery'
-import { ref, getCurrentInstance, reactive, nextTick } from 'vue'
+import { ref, getCurrentInstance, reactive, nextTick, onBeforeMount } from 'vue'
 import { useStore } from 'vuex'
-import { Delete, Plus } from '@element-plus/icons-vue'
+import { Delete, Plus, Share } from '@element-plus/icons-vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 
 export default { 
@@ -236,9 +235,13 @@ export default {
     const editedText = ref("");
     const editInputRef = ref(null);
 
+    let badgeTag = [];
+
+    console.log(badgeTag)
+
     const save = info => {
       $.ajax({
-        url: "http://localhost:520/api/calendar/addinfo/",
+        url: "https://www.jeffofficial.cn/api/calendar/addinfo/",
         type: "post",
         data:{
             date: info.date,
@@ -250,6 +253,11 @@ export default {
         success(resp){
             if(resp.error_message == "success") {
               dialogForm.data.dialogFormVisible = false;
+              ElMessage({
+                type: 'success',
+                message: '添加成功',
+              });
+              console.log(info.date);
             }
         }
       })
@@ -257,7 +265,7 @@ export default {
 
     const hoverContent = date => {
       $.ajax({
-        url: "http://localhost:520/api/calendar/getinfo/",
+        url: "https://www.jeffofficial.cn/api/calendar/getinfo/",
         type: "get",
         data: {
           date,
@@ -277,7 +285,7 @@ export default {
 
     const getImage = date => {
       $.ajax({
-        url: "http://localhost:520/api/calendar/getinfo/",
+        url: "https://www.jeffofficial.cn/api/calendar/getinfo/",
         type: "get",
         data: {
           date,
@@ -308,7 +316,7 @@ export default {
       filedata.append("file", file.file)
       filedata.append("date", day.value)
       $.ajax({
-        url: "http://localhost:520/api/calendar/upload/",
+        url: "https://www.jeffofficial.cn/api/calendar/upload/",
         type: "post",
         data: filedata,
         processData: false,
@@ -335,7 +343,6 @@ export default {
         editedText.value = content; // 保存原始文本
       }
       
-      
       nextTick(() => {
         // 在调用 focus 之前检查 editInputRef.value 是否不为 null
         if (editInputRef.value) {
@@ -352,7 +359,7 @@ export default {
       }
 
       $.ajax({
-        url: "http://localhost:520/api/calendar/addcontent/",
+        url: "https://www.jeffofficial.cn/api/calendar/addcontent/",
         type: "post",
         data:{
             picurl: img,
@@ -393,7 +400,7 @@ export default {
 
     const deletePic = (img) => {
       $.ajax({
-        url: "http://localhost:520/api/calendar/delpic/",
+        url: "https://www.jeffofficial.cn/api/calendar/delpic/",
         type: "post",
         data:{
             picurl: img
@@ -406,6 +413,31 @@ export default {
         }
       })
     }
+
+    const checkBadge = (date) => {
+      for(let i = 0; i < badgeTag.length; i ++) {
+        if(date == badgeTag[i]) {
+          return true;
+        }
+      }
+      return false; 
+    }
+
+    onBeforeMount(() => {
+      $.ajax({
+        url: "https://www.jeffofficial.cn/api/calendar/getallinfo/",
+        type: "get",
+        headers: {
+          Authorization: "Bearer " + store.state.user.token,
+        },
+        success(resp) {
+          for(let i = 0; i < resp.length; i ++) {
+            badgeTag.push(resp[i].date);
+          }
+        }
+      })
+      console.log(badgeTag);
+    })
 
     return{
       content,
@@ -430,7 +462,10 @@ export default {
       editInputRef,
       Delete,
       Plus,
-      confirmDelete
+      Share,
+      confirmDelete,
+      checkBadge,
+      badgeTag
     }
   },
 }
@@ -454,5 +489,9 @@ export default {
 }
 .inputdesc{
   width: 200px;
+}
+.badgeitem{
+  margin-top: -70px;
+  margin-left: 60px;
 }
 </style>
