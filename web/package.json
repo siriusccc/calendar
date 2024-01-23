@@ -10,11 +10,12 @@
   "dependencies": {
     "ali-oss": "^6.19.0",
     "bootstrap": "^5.3.2",
-    "core-js": "^3.35.0",
-    "element-plus": "^2.5.1",
+    "core-js": "^3.35.1",
+    "echarts": "^5.4.3",
+    "element-plus": "^2.5.3",
     "jquery": "^3.7.1",
     "terser-webpack-plugin": "^5.3.10",
-    "vue": "^3.4.13",
+    "vue": "^3.4.15",
     "vue-router": "^4.2.5",
     "vuex": "^4.1.0"
   },

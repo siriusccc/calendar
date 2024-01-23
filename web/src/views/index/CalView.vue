@@ -49,7 +49,7 @@
           <span v-if="!isEditing" @click="startEditing('null')">暂无评价</span>
           <el-input class="inputdesc" v-else v-show="isEditing" v-model="editedText" @blur="stopEditing(imageUrl.picurl)" @keyup.enter="stopEditing(imageUrl.picurl)" />
           <el-image 
-          :src="imageUrl.picurl" alt="图片" style="margin-bottom: 0px;" 
+          :src="imageUrl.picurl" alt="图片" style="margin-bottom: 0px; height: auto; max-width: 100%; overflow-y: auto;"
           :zoom-rate="1.2"
           :max-scale="7"
           :min-scale="0.2"
@@ -64,7 +64,7 @@
           <span v-if="!isEditing" @click="startEditing(imageUrl.content)">你的评价是：{{ imageUrl.content }}</span>
           <el-input class="inputdesc" v-else v-show="isEditing" v-model="editedText" @blur="stopEditing(imageUrl.picurl)" @keyup.enter="stopEditing(imageUrl.picurl)" />
           <el-image 
-          :src="imageUrl.picurl" alt="图片" style="margin-bottom: 0px;" 
+          :src="imageUrl.picurl" alt="图片" style="margin-bottom: 0px; height: auto; max-width: 100%; overflow-y: auto;"
           :zoom-rate="1.2"
           :max-scale="7"
           :min-scale="0.2"
@@ -237,11 +237,9 @@ export default {
 
     let badgeTag = [];
 
-    console.log(badgeTag)
-
     const save = info => {
       $.ajax({
-        url: "https://www.jeffofficial.cn/api/calendar/addinfo/",
+        url: "http://localhost:520/api/calendar/addinfo/",
         type: "post",
         data:{
             date: info.date,
@@ -265,7 +263,7 @@ export default {
 
     const hoverContent = date => {
       $.ajax({
-        url: "https://www.jeffofficial.cn/api/calendar/getinfo/",
+        url: "http://localhost:520/api/calendar/getinfo/",
         type: "get",
         data: {
           date,
@@ -285,7 +283,7 @@ export default {
 
     const getImage = date => {
       $.ajax({
-        url: "https://www.jeffofficial.cn/api/calendar/getinfo/",
+        url: "http://localhost:520/api/calendar/getinfo/",
         type: "get",
         data: {
           date,
@@ -316,7 +314,7 @@ export default {
       filedata.append("file", file.file)
       filedata.append("date", day.value)
       $.ajax({
-        url: "https://www.jeffofficial.cn/api/calendar/upload/",
+        url: "http://localhost:520/api/calendar/upload/",
         type: "post",
         data: filedata,
         processData: false,
@@ -359,7 +357,7 @@ export default {
       }
 
       $.ajax({
-        url: "https://www.jeffofficial.cn/api/calendar/addcontent/",
+        url: "http://localhost:520/api/calendar/addcontent/",
         type: "post",
         data:{
             picurl: img,
@@ -400,7 +398,7 @@ export default {
 
     const deletePic = (img) => {
       $.ajax({
-        url: "https://www.jeffofficial.cn/api/calendar/delpic/",
+        url: "http://localhost:520/api/calendar/delpic/",
         type: "post",
         data:{
             picurl: img
@@ -425,7 +423,7 @@ export default {
 
     onBeforeMount(() => {
       $.ajax({
-        url: "https://www.jeffofficial.cn/api/calendar/getallinfo/",
+        url: "http://localhost:520/api/calendar/getallinfo/",
         type: "get",
         headers: {
           Authorization: "Bearer " + store.state.user.token,
@@ -436,7 +434,6 @@ export default {
           }
         }
       })
-      console.log(badgeTag);
     })
 
     return{
@@ -475,17 +472,14 @@ export default {
 .is-selected {
   color: #1989fa;
 }
-.demo-image__lazy {
-  height: 300px;
+/* .demo-image__lazy {
+  height: 512px;
   overflow-y: auto;
-}
+} */
 .demo-image__lazy .el-image {
   display: block;
-  min-height: 230px;
+  min-height: 20px;
   margin-bottom: 100px;
-}
-.demo-image__lazy .el-image:last-child {
-  margin-bottom: 0;
 }
 .inputdesc{
   width: 200px;
