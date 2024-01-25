@@ -36,8 +36,8 @@
                 </div>
             </div>
             <div class="col-6">
-                <div class="card" style="width: 900px; height: 400px;"> 
-                    <div ref="heatmapChart" style="width: 100%; height: 100%;">
+                <div class="card" style="width: 900px; height: 250px;"> 
+                    <div id="main" style="width: 100%; height: 100%;">
                     </div>
                 </div>
             </div>
@@ -50,7 +50,7 @@
                     <el-button type="primary" @click="updateid(newusername)">确定</el-button>
                 </el-form-item>
                 <el-form-item label="更换头像">
-                    <el-upload action="http://localhost:520/api/user/uploadpic/" 
+                    <el-upload action="https://www.jeffofficial.cn/api/user/uploadpic/" 
                         :headers="headersobj"
                         :on-success="handleUploadSuccess">
                         <el-button size="big" type="primary">
@@ -134,7 +134,7 @@ export default {
 
     const updateid = (username) => {
         $.ajax({
-        url: "http://localhost:520/api/user/updateid/",
+        url: "https://www.jeffofficial.cn/api/user/updateid/",
         type: "post",
         data:{
             username: username,
@@ -158,107 +158,68 @@ export default {
       store.commit('updatePhoto', newPhotoUrl);
     }
 
-    // var chartDom = document.getElementById('main');
-    // var myChart = echarts.init(chartDom);
-    // var option;
-
     function getVirtualData() {
-        const data = [['2024-03-03',10],
-                        ['2024-03-04',10],
-                        ['2024-03-05',10],
-                        ['2024-03-06',10],
-                        ['2024-03-07',10],
-                        ['2024-03-08',10],
-                        ['2024-03-09',10],
-                        ['2024-03-16',10],
-                        ['2024-03-23',10],
-                        ['2024-03-30',10],
-                        ['2024-05-12',10],
-                        ['2024-05-19',10],
-                        ['2024-05-06',10],
-                        ['2024-04-30',10],
-                        ['2024-05-01',10],
-                        ['2024-05-02',10],
-                        ['2024-05-10',10],
-                        ['2024-05-18',10],
-                        ['2024-05-25',10],
-                        ['2024-05-31',10],
-                        ['2024-05-27',10],
-                        ['2024-06-04',10],
-                        ['2024-06-05',10],
-                        ['2024-06-06',10],
-                        ['2024-07-07',10],
-                        ['2024-07-16',10],
-                        ['2024-07-08',10],
-                        ['2024-07-17',10],
-                        ['2024-07-25',10],
-                        ['2024-07-26',10],
-                        ['2024-08-03',10],
-                        ['2024-08-09',10],
-                        ['2024-08-08',10],
-                        ['2024-08-13',10],
-                        ['2024-08-14',10],
-                        ['2024-08-19',10],
-                        ['2024-08-18',10],
-                        ['2024-08-18',10],
-                        ['2024-09-15',10],
-                        ['2024-09-16',10],
-                        ['2024-09-17',10],
-                        ['2024-09-18',10],
-                        ['2024-09-19',10],
-                        ['2024-09-20',10],
-                        ['2024-09-21',10],
-                        ['2024-09-22',10],
-                        ['2024-09-25',10],
-                        ['2024-09-29',10],
-                        ['2024-09-28',10],
-                        ['2024-10-02',10],
-                        ['2024-10-05',10],
-                        ['2024-10-06',10],
-                        ['2024-10-12',10],
-                        ['2024-10-13',10],
-                        ['2024-10-09',10],
-                        ['2024-10-19',10],
-            ];
+        const data = [['2024-03-03',10], ['2024-03-04',10], ['2024-03-05',10],
+                        ['2024-03-06',10], ['2024-03-07',10], ['2024-03-08',10],
+                        ['2024-03-09',10], ['2024-03-16',10], ['2024-03-23',10],
+                        ['2024-03-30',10], ['2024-05-12',10], ['2024-05-19',10],
+                        ['2024-05-06',10], ['2024-04-30',10], ['2024-05-01',10],
+                        ['2024-05-02',10], ['2024-05-10',10], ['2024-05-18',10],
+                        ['2024-05-25',10], ['2024-05-31',10], ['2024-05-27',10],
+                        ['2024-06-04',10], ['2024-06-05',10], ['2024-06-06',10],
+                        ['2024-07-07',10], ['2024-07-16',10], ['2024-07-08',10],
+                        ['2024-07-17',10], ['2024-07-25',10], ['2024-07-26',10],
+                        ['2024-08-03',10], ['2024-08-09',10], ['2024-08-08',10],
+                        ['2024-08-13',10], ['2024-08-14',10], ['2024-08-19',10],
+                        ['2024-08-18',10], ['2024-08-18',10], ['2024-09-15',10],
+                        ['2024-09-16',10], ['2024-09-17',10], ['2024-09-18',10],
+                        ['2024-09-19',10], ['2024-09-20',10], ['2024-09-21',10],
+                        ['2024-09-22',10], ['2024-09-25',10], ['2024-09-29',10],
+                        ['2024-09-28',10], ['2024-10-02',10], ['2024-10-05',10],
+                        ['2024-10-06',10], ['2024-10-12',10], ['2024-10-13',10],
+                        ['2024-10-09',10], ['2024-10-19',10] ];
             return data;
         }
 
-        const heatmapChart = ref(null);
-
         onMounted(() => {
             //页面加载完成后加载echarts
-            const chartDom = heatmapChart.value;
-            const myChart = echarts.init(chartDom);
+            var chartDom = document.getElementById('main');
+            var myChart = echarts.init(chartDom);
+            var option;
             
-            const option = {
+            option = {
                 title: {
-                    top: 300,
+                    top: 30,
                     left: 'center',
                     text: 'Daily Count'
                 },
+                tooltip: {},
                 visualMap: {
                     min: 0,
                     max: 10,
                     type: 'piecewise',
                     orient: 'horizontal',
                     left: 'center',
-                    top: 65
+                    top: 65,
+                    show: false
                 },
                 calendar: {
-                    top: 110,
+                    top: 90,
                     left: 30,
                     right: 30,
                     cellSize: ['auto', 13],
                     range: '2024',
                     itemStyle: {
-                    borderWidth: 1,
+                        borderWidth: 0.2
                     },
-                    splitLine:{
-                    show:true
+                    dayLabel: { show: false },
+                    splitLine: {
+                        show: true,
+                        lineStyle:{
+                            width: 0.3
+                        }
                     },
-                    dayLabel:{
-                    show: false
-                    }
+                    monthLabel: { show: true },
                 },
                 series: {
                     type: 'heatmap',
@@ -268,7 +229,6 @@ export default {
             };
 
             myChart.setOption(option);
-            
             //随页面动态缩放
             window.onresize = function () {
                 myChart.resize()
@@ -286,8 +246,7 @@ export default {
         headersobj,
         updateid,
         newusername,
-        handleUploadSuccess,
-        heatmapChart
+        handleUploadSuccess
     }
   }
 }

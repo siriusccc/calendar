@@ -1,159 +1,148 @@
 <template>
-    <div>
-      <div class="calendar">
-        <div class="calendar-header">
-          <button @click="previousMonth">&lt;</button>
-          <span>{{ currentMonth }}</span>
-          <button @click="nextMonth">&gt;</button>
-        </div>
-        <div class="calendar-body">
-          <div class="weekdays">
-            <div v-for="day in daysOfWeek" :key="day" class="weekday">{{ day }}</div>
-          </div>
-          <div v-for="row in calendarRows" :key="row">
-            <div v-for="day in row" :key="day.date" class="calendar-cell" @click="openUploadModal(day)">
-              <span v-if="day.date">{{ day.date }}</span>
-            </div>
-          </div>
-        </div>
-      </div>
+  <div class="loader-container">
+    <canvas ref="loaderCanvas" width="480px" height="480px"></canvas>
+    <h1>小谭天下最美</h1>
+  </div>
+</template>
   
-      <!-- 弹出的上传图片窗口 -->
-      <div v-if="showUploadModal" class="upload-modal">
-        <input type="file" @change="handleFileUpload" accept="image/*">
-        <button @click="closeUploadModal">Close</button>
-      </div>
-    </div>
-  </template>
-  
-  <script>
-  export default {
-    data() {
-      return {
-        currentMonth: '',
-        daysOfWeek: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
-        calendar: [],
-        showUploadModal: false,
-        selectedDate: null,
-        uploadedImage: null,
-      };
-    },
-    mounted() {
-      this.generateCalendar();
-    },
-    methods: {
-      generateCalendar() {
-        // 在这里生成日历数据，你可以使用日期库来简化日期操作，例如 day.js 或 moment.js
-        // 这里的示例是简化的日历生成逻辑
-        const today = new Date();
-        const year = today.getFullYear();
-        const month = today.getMonth();
-        this.currentMonth = `${year} / ${month + 1}`;
-  
-        const daysInMonth = new Date(year, month + 1, 0).getDate();
-        const firstDayOfMonth = new Date(year, month, 1).getDay();
-  
-        let date = 1;
-        for (let i = 0; i < 6; i++) {
-          const week = [];
-          for (let j = 0; j < 7; j++) {
-            if ((i === 0 && j < firstDayOfMonth) || date > daysInMonth) {
-              week.push({ date: null });
-            } else {
-              week.push({ date });
-              date++;
+<script>
+export default {
+  mounted() {
+    this.setupLoader();
+  },
+  methods: {
+    setupLoader() {
+      const canvas = this.$refs.loaderCanvas;
+      const ctx = canvas.getContext('2d');
+      const max_size = 24;
+      const max_particles = 1500;
+      const min_vel = 20;
+      const max_generation_per_frame = 10;
+      const particles = [];
+      let last = Date.now();
+
+      function isInsideHeart(x, y) {
+        x = ((x - canvas.width / 2) / (canvas.width / 2)) * 3;
+        y = ((y - canvas.height / 2) / (canvas.height / 2)) * -3;
+        return Math.pow(x * x + y * y - 1, 3) - x * x * y * y * y < 0;
+      }
+
+      function random(size, freq) {
+        let val = 0;
+        let iter = freq;
+
+        do {
+          size /= iter;
+          iter += freq;
+          val += size * Math.random();
+        } while (size >= 1);
+
+        return val;
+      }
+
+      function Particle() {
+        let x = canvas.width / 2;
+        let y = canvas.height / 2;
+        let size = ~~random(max_size, 2.4);
+        let x_vel = ((max_size + min_vel) - size) / 2 - (Math.random() * ((max_size + min_vel) - size));
+        let y_vel = ((max_size + min_vel) - size) / 2 - (Math.random() * ((max_size + min_vel) - size));
+        let nx = x;
+        let ny = y;
+        let r, g, b, a = 0.05 * size;
+
+        this.draw = function () {
+          r = ~~(255 * (x / canvas.width));
+          g = ~~(255 * (1 - (y / canvas.height)));
+          b = ~~(255 - r);
+          ctx.fillStyle = 'rgba(' + r + ',' + g + ',' + b + ',' + a + ')';
+          ctx.beginPath();
+          ctx.arc(x, y, size, 0, Math.PI * 2, true);
+          ctx.closePath();
+          ctx.fill();
+        };
+
+        this.move = function (dt) {
+          nx += x_vel * dt;
+          ny += y_vel * dt;
+          if (!isInsideHeart(nx, ny)) {
+            if (!isInsideHeart(nx, y)) {
+              x_vel *= -1;
+              return;
             }
+
+            if (!isInsideHeart(x, ny)) {
+              y_vel *= -1;
+              return;
+            }
+
+            x_vel = -1 * y_vel;
+            y_vel = -1 * x_vel;
+            return;
           }
-          this.calendar.push(week);
+
+          x = nx;
+          y = ny;
+        };
+      }
+
+      function movementTick() {
+        const len = particles.length;
+        const dead = max_particles - len;
+        for (let i = 0; i < dead && i < max_generation_per_frame; i++) {
+          particles.push(new Particle());
         }
-      },
-      previousMonth() {
-        // 切换到上一个月
-        // 可以在这里实现逻辑来更新日历数据
-      },
-      nextMonth() {
-        // 切换到下一个月
-        // 可以在这里实现逻辑来更新日历数据
-      },
-      openUploadModal(day) {
-        if (day.date) {
-          this.selectedDate = day.date;
-          this.showUploadModal = true;
-        }
-      },
-      closeUploadModal() {
-        this.showUploadModal = false;
-      },
-      handleFileUpload(event) {
-        const file = event.target.files[0];
-        // 在这里处理上传的文件，你可以进行上传逻辑和保存数据的操作
-        // 这里示例只是将上传的图片保存在 uploadedImage 中
-        this.uploadedImage = URL.createObjectURL(file);
-        // 这里可以根据业务逻辑将上传的图片与对应日期关联起来
-        // 可以使用 selectedDate 变量来获取选定的日期
-      },
+
+        const now = Date.now();
+        let dt = last - now;
+        dt /= 1000;
+        last = now;
+        particles.forEach(function (p) {
+          p.move(dt);
+        });
+      }
+
+      function tick() {
+        ctx.clearRect(0, 0, canvas.width * 10, canvas.height * 10);
+        particles.forEach(function (p) {
+          p.draw();
+        });
+
+        requestAnimationFrame(tick);
+      }
+
+      setInterval(movementTick, 16);
+      tick();
     },
-    computed: {
-      calendarRows() {
-        const rows = [];
-        for (let i = 0; i < this.calendar.length; i++) {
-          rows.push(this.calendar[i]);
-        }
-        return rows;
-      },
-    },
-  };
-  </script>
+  },
+};
+</script>
   
-  <style>
-  /* 样式可以根据需要自行调整 */
-  .calendar {
-    width: 300px;
-    border: 1px solid #ccc;
-    padding: 10px;
-    text-align: center;
-    font-family: Arial, sans-serif;
-  }
-  
-  .calendar-header {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 10px;
-  }
-  
-  .calendar-body {
-    display: flex;
-    flex-direction: column;
-  }
-  
-  .weekdays {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 5px;
-  }
-  
-  .weekday {
-    width: 30px;
-  }
-  
-  .calendar-cell {
-    width: 30px;
-    height: 30px;
-    border: 1px solid #ccc;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    cursor: pointer;
-  }
-  
-  .upload-modal {
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background: white;
-    padding: 20px;
-    border: 1px solid #ccc;
-  }
-  </style>
-  
+<style scoped>
+.loader-container {
+  position: fixed;
+  top: 57px;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: url('@/assets/images/background5.jpg');
+  background-size: cover;
+}
+
+.loader-container h1 {
+  position: absolute;
+  top: 100px;
+  left: 0px;
+  text-align: center;
+  width: 100%;
+  top: 0px;
+  line-height: 420px;
+  font-size: 24px;
+  color: rgba(0, 0, 0, 0.4);
+  font-weight: 500;
+}
+canvas {
+  position: absolute;
+  top: 0%;
+  left: 34.5%;
+}
+</style>

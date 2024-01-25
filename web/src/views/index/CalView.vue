@@ -239,7 +239,7 @@ export default {
 
     const save = info => {
       $.ajax({
-        url: "http://localhost:520/api/calendar/addinfo/",
+        url: "https://www.jeffofficial.cn/api/calendar/addinfo/",
         type: "post",
         data:{
             date: info.date,
@@ -263,7 +263,7 @@ export default {
 
     const hoverContent = date => {
       $.ajax({
-        url: "http://localhost:520/api/calendar/getinfo/",
+        url: "https://www.jeffofficial.cn/api/calendar/getinfo/",
         type: "get",
         data: {
           date,
@@ -283,7 +283,7 @@ export default {
 
     const getImage = date => {
       $.ajax({
-        url: "http://localhost:520/api/calendar/getinfo/",
+        url: "https://www.jeffofficial.cn/api/calendar/getinfo/",
         type: "get",
         data: {
           date,
@@ -314,7 +314,7 @@ export default {
       filedata.append("file", file.file)
       filedata.append("date", day.value)
       $.ajax({
-        url: "http://localhost:520/api/calendar/upload/",
+        url: "https://www.jeffofficial.cn/api/calendar/upload/",
         type: "post",
         data: filedata,
         processData: false,
@@ -357,7 +357,7 @@ export default {
       }
 
       $.ajax({
-        url: "http://localhost:520/api/calendar/addcontent/",
+        url: "https://www.jeffofficial.cn/api/calendar/addcontent/",
         type: "post",
         data:{
             picurl: img,
@@ -398,7 +398,7 @@ export default {
 
     const deletePic = (img) => {
       $.ajax({
-        url: "http://localhost:520/api/calendar/delpic/",
+        url: "https://www.jeffofficial.cn/api/calendar/delpic/",
         type: "post",
         data:{
             picurl: img
@@ -423,7 +423,7 @@ export default {
 
     onBeforeMount(() => {
       $.ajax({
-        url: "http://localhost:520/api/calendar/getallinfo/",
+        url: "https://www.jeffofficial.cn/api/calendar/getallinfo/",
         type: "get",
         headers: {
           Authorization: "Bearer " + store.state.user.token,

@@ -6,7 +6,7 @@ const routes = [
   {
     path:"/",
     name:"home",
-    redirect:"/calendar/",
+    redirect:"/tree/",
     meta: {
       requestAuth: true,
     }

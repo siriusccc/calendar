@@ -41,7 +41,7 @@ export default {
 
         const register = () => {
             $.ajax({
-                url: "http://localhost:520/api/user/register/",
+                url: "https://www.jeffofficial.cn/api/user/register/",
                 type: "post",
                 data: {
                     username: username.value,
