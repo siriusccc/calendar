@@ -1,7 +1,7 @@
 <template>
-  <div class="loader-container">
+  <div class="loader-container" ref="container">
     <canvas ref="loaderCanvas" width="480px" height="480px"></canvas>
-    <h1>小谭天下最美</h1>
+    <h1 ref="text">小谭天下最美<br>啦啦啦</h1>
   </div>
 </template>
   
@@ -9,13 +9,18 @@
 export default {
   mounted() {
     this.setupLoader();
+    window.addEventListener('resize', this.handleResize);
+    this.handleResize();
+  },
+  beforeUnmount() {
+    window.removeEventListener('resize', this.handleResize);
   },
   methods: {
     setupLoader() {
       const canvas = this.$refs.loaderCanvas;
       const ctx = canvas.getContext('2d');
       const max_size = 24;
-      const max_particles = 1500;
+      const max_particles = 2000;
       const min_vel = 20;
       const max_generation_per_frame = 10;
       const particles = [];
@@ -113,6 +118,17 @@ export default {
       setInterval(movementTick, 16);
       tick();
     },
+    handleResize() {
+      const canvas = this.$refs.loaderCanvas;
+      const container = canvas.parentElement;
+      const text = this.$refs.text;
+      const centerX = container.offsetWidth / 2;
+      const centerY = container.offsetHeight / 2;
+      canvas.style.left = centerX - (canvas.width / 2) + 'px';
+      canvas.style.top = centerY - (canvas.height / 2) + 'px';
+      text.style.left = centerX - (text.offsetWidth / 2) + 'px';
+      text.style.top = centerY - (text.offsetHeight / 2) + 'px';
+    }
   },
 };
 </script>
@@ -127,22 +143,17 @@ export default {
   background: url('@/assets/images/background5.jpg');
   background-size: cover;
 }
-
 .loader-container h1 {
   position: absolute;
-  top: 100px;
-  left: 0px;
   text-align: center;
-  width: 100%;
-  top: 0px;
-  line-height: 420px;
+  line-height: 40px;
   font-size: 24px;
   color: rgba(0, 0, 0, 0.4);
   font-weight: 500;
 }
 canvas {
   position: absolute;
-  top: 0%;
-  left: 34.5%;
+  top: 0;
+  left: 0;
 }
 </style>

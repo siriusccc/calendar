@@ -36,9 +36,8 @@
                 </div>
             </div>
             <div class="col-6">
-                <div class="card" style="width: 900px; height: 250px;"> 
-                    <div id="main" style="width: 100%; height: 100%;">
-                    </div>
+                <div class="card" style="width: 80%; height: 230px;"> 
+                    <div id="main" style="width: 100%; height: 100%;"/>
                 </div>
             </div>
         </div>
@@ -131,7 +130,6 @@ export default {
         }
     });
     
-
     const updateid = (username) => {
         $.ajax({
         url: "https://www.jeffofficial.cn/api/user/updateid/",
@@ -235,7 +233,6 @@ export default {
             }
         });
 
-        
 
     return{
         dialogVisible,
@@ -256,5 +253,8 @@ export default {
 div.card{
     margin-top: 20px;
     text-align: center;
+}
+.col-6 {
+    width: 60%; /* 也可以根据需要调整具体的百分比 */
 }
 </style>
