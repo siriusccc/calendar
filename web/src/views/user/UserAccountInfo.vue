@@ -49,7 +49,7 @@
                     <el-button type="primary" @click="updateid(newusername)">确定</el-button>
                 </el-form-item>
                 <el-form-item label="更换头像">
-                    <el-upload action="https://www.jeffofficial.cn/api/user/uploadpic/" 
+                    <el-upload action="http://localhost:520/api/user/uploadpic/" 
                         :headers="headersobj"
                         :on-success="handleUploadSuccess">
                         <el-button size="big" type="primary">
@@ -132,7 +132,7 @@ export default {
     
     const updateid = (username) => {
         $.ajax({
-        url: "https://www.jeffofficial.cn/api/user/updateid/",
+        url: "http://localhost:520/api/user/updateid/",
         type: "post",
         data:{
             username: username,

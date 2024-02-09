@@ -80,25 +80,32 @@
       </template>
     </el-drawer>
 
-    <el-dialog v-model="dialogFormVisible" title="插入内容">
+    <el-dialog v-model="dialogFormVisible" title="插入内容" @close="handleDialogClose">
       <el-form :model="calendar" :label-width="100">
         <el-form-item label="添加内容">
           <el-input v-model="calendar.content" autocomplete="off" />
         </el-form-item>
         <el-form-item label="上传图片">
           <el-upload
-            class="pic-uploader" 
+            ref="upload"
+            class="pic-uploader"
             :http-request="handleHttpRequest"             
             :data="formData"
-            v-model:file-list="fileList"
             list-type="picture-card"
             :on-preview="handlePictureCardPreview"
             multiple
+            drag
             accept=".jpg, .png">
-            <!-- <el-button size="big" type="primary" style="width: 100%;">
-              点击上传
-            </el-button> -->
             <el-icon class="avatar-uploader-icon"><Plus /></el-icon>
+            <!-- <el-icon class="el-icon--upload" style="margin-top: 0px;"><upload-filled /></el-icon> -->
+            <div class="el-upload__text">
+              点击或<em>拖拽上传</em>
+            </div>
+            <template #tip>
+              <div class="el-upload__tip">
+                jpg/png only
+              </div>
+            </template>
           </el-upload>
 
           <el-dialog v-model="dialogVisible">
@@ -152,7 +159,6 @@
               </el-button>
             </template>
           </el-drawer>
-
         </span>
       </template>
     </el-dialog>
@@ -165,12 +171,14 @@ import ContentField from '../../components/ContentField.vue'
 import $ from 'jquery'
 import { ref, getCurrentInstance, reactive, nextTick, onBeforeMount } from 'vue'
 import { useStore } from 'vuex'
-import { Delete, Plus, Share } from '@element-plus/icons-vue'
+import { Delete, Plus } from '@element-plus/icons-vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 
 export default { 
   components: {
       ContentField,
+      Plus,
+      // UploadFilled
   },
   data() {
     return {
@@ -181,9 +189,15 @@ export default {
       clickCount: 0,
       clickTimer: null,
       title: "",
+      formData: {},
     }
   },
   methods: {
+    handleDialogClose() {
+      this.calendar = {};
+      this.formData = {};
+      this.$refs.upload.clearFiles(); // 手动清空上传组件内的文件缓存
+    },
     handleClick(date) {
       this.getImage(date);
       this.clickCount ++;
@@ -227,7 +241,6 @@ export default {
     let imageUrls = ref();
     const day = ref(null);
 
-    const fileList = ref([]);
     const dialogImageUrl = ref('');
     const dialogVisible = ref(false);
 
@@ -239,7 +252,7 @@ export default {
 
     const save = info => {
       $.ajax({
-        url: "https://www.jeffofficial.cn/api/calendar/addinfo/",
+        url: "http://localhost:520/api/calendar/addinfo/",
         type: "post",
         data:{
             date: info.date,
@@ -263,7 +276,7 @@ export default {
 
     const hoverContent = date => {
       $.ajax({
-        url: "https://www.jeffofficial.cn/api/calendar/getinfo/",
+        url: "http://localhost:520/api/calendar/getinfo/",
         type: "get",
         data: {
           date,
@@ -283,7 +296,7 @@ export default {
 
     const getImage = date => {
       $.ajax({
-        url: "https://www.jeffofficial.cn/api/calendar/getinfo/",
+        url: "http://localhost:520/api/calendar/getinfo/",
         type: "get",
         data: {
           date,
@@ -314,7 +327,7 @@ export default {
       filedata.append("file", file.file)
       filedata.append("date", day.value)
       $.ajax({
-        url: "https://www.jeffofficial.cn/api/calendar/upload/",
+        url: "http://localhost:520/api/calendar/upload/",
         type: "post",
         data: filedata,
         processData: false,
@@ -323,7 +336,16 @@ export default {
           Authorization: "Bearer " + store.state.user.token,
         },
         success(resp) {
-          console.log(resp);
+          // console.log(resp);
+          if(resp.error_message == "success") {
+            ElMessage({
+              type: 'success',
+              message: '上传成功',
+            });
+          } else {
+            ElMessage.error('上传失败')
+          }
+          dialogForm.data.dialogFormVisible = false;
         }
       })
     }
@@ -357,7 +379,7 @@ export default {
       }
 
       $.ajax({
-        url: "https://www.jeffofficial.cn/api/calendar/addcontent/",
+        url: "http://localhost:520/api/calendar/addcontent/",
         type: "post",
         data:{
             picurl: img,
@@ -398,7 +420,7 @@ export default {
 
     const deletePic = (img) => {
       $.ajax({
-        url: "https://www.jeffofficial.cn/api/calendar/delpic/",
+        url: "http://localhost:520/api/calendar/delpic/",
         type: "post",
         data:{
             picurl: img
@@ -423,7 +445,7 @@ export default {
 
     onBeforeMount(() => {
       $.ajax({
-        url: "https://www.jeffofficial.cn/api/calendar/getallinfo/",
+        url: "http://localhost:520/api/calendar/getallinfo/",
         type: "get",
         headers: {
           Authorization: "Bearer " + store.state.user.token,
@@ -448,18 +470,15 @@ export default {
       imageUrlss,
       handleHttpRequest,
       day,
-      fileList,
       dialogImageUrl,
       dialogVisible,
       handlePictureCardPreview,
       startEditing,
       stopEditing,
+      Delete,
       isEditing,
       editedText,
       editInputRef,
-      Delete,
-      Plus,
-      Share,
       confirmDelete,
       checkBadge,
       badgeTag
