@@ -13,7 +13,7 @@
     <el-sub-menu index="2" :popper-offset="8" class="header-right">
       <template #title>更多</template>
       <el-menu-item index="/pk/">关于</el-menu-item>
-      <el-menu-item index="/tree/">正在修建中</el-menu-item>
+      <el-menu-item index="/home/">正在修建中</el-menu-item>
       <!-- <el-sub-menu index="3-4" :popper-offset="20">
         <template #title>子子</template>
         <el-menu-item index="/404/">子子1</el-menu-item>

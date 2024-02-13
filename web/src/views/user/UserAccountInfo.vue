@@ -67,6 +67,15 @@
                 @click="selectImage(image)">
                 </el-image>
             </div>
+            <template #footer>
+                <el-upload action="http://localhost:520/api/user/uploadbg/" 
+                        :headers="headersobj"
+                        :on-success="handleUploadBgSuccess">
+                    <el-button type="primary">
+                        添加背景
+                    </el-button>
+                </el-upload>
+            </template>
         </el-dialog>
     </div>
 </template>
@@ -155,6 +164,11 @@ export default {
       const newPhotoUrl = response.data;
       store.commit('updatePhoto', newPhotoUrl);
     }
+    
+    const handleUploadBgSuccess = (response) => {
+      console.log(response.error_message);
+      console.log(response.data);
+    }
 
     function getVirtualData() {
         const data = [['2024-03-03',10], ['2024-03-04',10], ['2024-03-05',10],
@@ -233,6 +247,9 @@ export default {
             }
         });
 
+    const addBg = () => {
+        console.log("tianjiachengg");
+    }
 
     return{
         dialogVisible,
@@ -243,7 +260,9 @@ export default {
         headersobj,
         updateid,
         newusername,
-        handleUploadSuccess
+        handleUploadSuccess,
+        handleUploadBgSuccess,
+        addBg
     }
   }
 }

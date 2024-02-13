@@ -6,7 +6,7 @@ const routes = [
   {
     path:"/",
     name:"home",
-    redirect:"/tree/",
+    redirect:"/home/",
     meta: {
       requestAuth: true,
     }
@@ -20,9 +20,9 @@ const routes = [
     }
   },
   {
-    path:"/tree/",
-    name: "tree",
-    component: () => import('../views/home/XmasTree'),
+    path:"/home/",
+    name: "heart",
+    component: () => import('../views/home/HomePage.vue'),
     meta: {
       requestAuth: false,
     }

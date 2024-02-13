@@ -38,4 +38,12 @@ public class UploadPicServiceImpl implements UploadPicService {
         map.put("data", url);
         return map;
     }
+
+    @Override
+    public Map<String, String> uploadBg(String url) {
+        Map<String, String> map = new HashMap<>();
+        map.put("error_message", "success");
+        map.put("data", url);
+        return map;
+    }
 }
